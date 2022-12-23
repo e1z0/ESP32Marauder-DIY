@@ -4,7 +4,7 @@
 
 ## About
 
-This guide will describe how to setup ESP32 Marauder on self made board/components. The above examples will use there components:
+This guide will describe how to setup ESP32 Marauder on self made board/components. The below example will use these components:
 
 * ESP32 [ESP32-WROOM-32D Microcontroller module](https://www.aliexpress.com/item/32864722159.html) 4,17eur
 * [MicroSD Module](https://www.aliexpress.com/item/1005001861949506.html) 0,43eur
@@ -30,7 +30,7 @@ Estimated project time: 2 to 8 hours
 
 
 | TFT Module | ESP32 Board |
-|____________|_____________|
+|------------|-------------|
 | TFT 5V     | 5V          |
 | TFT GND    | GND         |
 | TFT MISO   | Pin 19      |
@@ -44,7 +44,7 @@ Estimated project time: 2 to 8 hours
 ### SD Card Module
 
 | SD Card module | ESP32 Board          |
-|________________|______________________|
+|----------------|----------------------|
 | SD 3v3         | 3V3                  |
 | SD GND         | GND                  |
 | SD CS          | Pin 15               |
@@ -61,7 +61,7 @@ Estimated project time: 2 to 8 hours
 
 ### Prototype with the breadboard
 
-<img src="https://github.com/e1z0/ESP32Marauder-DIY/raw/master/guide/pics/prototype.png" width="400"/>
+<img src="https://github.com/e1z0/ESP32Marauder-DIY/raw/master/guide/pics/prototype.jpg" width="400"/>
 
 ### Building mess
 
@@ -91,7 +91,7 @@ Estimated project time: 2 to 8 hours
 
 <img src="https://github.com/e1z0/ESP32Marauder-DIY/raw/master/guide/pics/building_13.jpg" width="400"/>
 
-<img src="https://github.com/e1z0/ESP32Marauder-DIY/raw/master/guide/pics/building_14.jpg" width="400"/>
+<img src="https://github.com/e1z0/ESP32Marauder-DIY/raw/master/guide/pics/building_14.jpeg" width="400"/>
 
 <img src="https://github.com/e1z0/ESP32Marauder-DIY/raw/master/guide/pics/building_15.jpg" width="400"/>
 
@@ -110,6 +110,7 @@ Infill density: 45%
 Layer height: 0,18mm
 Raft: Yes
 ```
+STL and SketchUp Files are [located here](https://github.com/e1z0/ESP32Marauder-DIY/tree/master/3d-print).
 
     
 ## Software flashing
@@ -125,23 +126,22 @@ Raft: Yes
     - Download the SimpleList repo
     - In the Arduino IDE, go to `Sketch`>`Include Library`>`Add .ZIP Library...` and add the SimpleList-master.zip you just downloaded
 <!---6. Install Bodmer's [TFT_eSPI](https://github.com/Bodmer/TFT_eSPI) library in your Arduino IDE--->
-6. Install my fork of Bodmer's [TFT_eSPI](https://github.com/justcallmekoko/TFT_eSPI) library in your Arduino IDE
+6. Install Bodmer's [TFT_eSPI](https://github.com/Bodmer/TFT_eSPI) library in your Arduino IDE
     - Download the TFT_eSPI repo
     - In the Arduino IDE, go to `Sketch`>`Include Library`>`Add .ZIP Library...` and add the TFT-eSPI-master.zip you just downloaded
-    - Make the following modifications shown in [this issue](https://github.com/justcallmekoko/ESP32Marauder/issues/2#issuecomment-555695918) to the TFT_eSPI library you just installed
 7. Follow [these instructions](https://github.com/me-no-dev/arduino-esp32fs-plugin) for installing ESP32 Spiffs Tool
 8. Install the [CH340 Drivers](https://github.com/justcallmekoko/ESP32Marauder/blob/master/Drivers/CH34x_Install_Windows_v3_4.EXE) (if you are running windows)
 
 ### Prepare code
 
-1. Copy `User_Setup.h` from project root directory of repository to `~/Documents/Arduino/libraries/TFT_eSPI `, if you change any pins configuration you should change the definitions in this file too as in project's `configs.h` either.
+1. Copy `User_Setup.h` from project root directory of repository to `~/Documents/Arduino/libraries/TFT_eSPI `, if you change any pins configuration you should change the definitions in this file too, as in project's `configs.h` either.
 1. Download or clone this repository
 2. Open `esp32_marauder/esp32_marauder.ino`
 3. Plug your ESP32 into a USB port and select the COM port under `Tools`>`Port`
 4. Select `LOLIN D32` under `Tools`>`Boards`
-13. Select `Tools`>`Partition scheme`>`Minimal SPIFFS (Large APPS with OTA)`
-5. Click `ESP32 Sketch Data Upload` and wait for the SPIFFS upload to finish
-6. Click the upload button
-7. When device resets, you should see boot logo on your TFT screen
+5. Select `Tools`>`Partition scheme`>`Minimal SPIFFS (Large APPS with OTA)`
+6. Click `ESP32 Sketch Data Upload` and wait for the SPIFFS upload to finish
+7. Click the upload button
+8. When device resets, you should see boot logo on your TFT screen
 
 For more information please read [official wiki](https://github.com/justcallmekoko/ESP32Marauder/wiki).
