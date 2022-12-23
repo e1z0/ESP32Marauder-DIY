@@ -1349,9 +1349,13 @@ void MenuFunctions::orientDisplay()
     #ifdef TFT_SHIELD
       uint16_t calData[5] = { 275, 3494, 361, 3528, 4 }; // tft.setRotation(0); // Portrait with TFT Shield
       //Serial.println("Using TFT Shield");
-    #else if defined(TFT_DIY)
+    #endif  
+    #ifdef TFT_DIY
       uint16_t calData[5] = { 339, 3470, 237, 3438, 2 }; // tft.setRotation(0); // Portrait with DIY TFT
       //Serial.println("Using TFT DIY");
+    #endif
+    #ifdef TFT_RPI
+      uint16_t calData[5] = { 315, 3433, 325, 3564, 6 }; // tft.setRotation(0); // Portrait with RPI TFT
     #endif
 
     display_obj.tft.setTouch(calData);

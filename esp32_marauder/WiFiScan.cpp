@@ -346,7 +346,11 @@ void WiFiScan::startWiFiAttacks(uint8_t scan_mode, uint16_t color, String title_
     display_obj.initScrollValues(true);
     display_obj.tft.setTextWrap(false);
     display_obj.tft.setTextColor(TFT_BLACK, color);
+    #ifdef MARAUDER_DIY
+    display_obj.tft.fillRect(0,16,SCREEN_WIDTH,16, color);
+    #else
     display_obj.tft.fillRect(0,16,240,16, color);
+    #endif
     display_obj.tft.drawCentreString((String)title_string,120,16,2);
     display_obj.touchToExit();
     display_obj.tft.setTextColor(TFT_GREEN, TFT_BLACK);
@@ -551,7 +555,11 @@ void WiFiScan::RunAPScan(uint8_t scan_mode, uint16_t color)
     display_obj.tft.setTextWrap(false);
     display_obj.tft.setTextColor(TFT_WHITE, color);
     #ifndef MARAUDER_MINI
+      #ifdef MARAUDER_DIY
+      display_obj.tft.fillRect(0,16,SCREEN_WIDTH,16, color);
+      #else
       display_obj.tft.fillRect(0,16,240,16, color);
+      #endif
       display_obj.tft.drawCentreString(text_table4[44],120,16,2);
       display_obj.touchToExit();
     #endif
@@ -582,10 +590,16 @@ void WiFiScan::RunAPScan(uint8_t scan_mode, uint16_t color)
     #ifdef TFT_SHIELD
       uint16_t calData[5] = { 391, 3491, 266, 3505, 7 }; // Landscape TFT Shield
       Serial.println("Using TFT Shield");
-    #else if defined(TFT_DIY)
+    #endif  
+    #ifdef TFT_DIY
       uint16_t calData[5] = { 213, 3469, 320, 3446, 1 }; // Landscape TFT DIY
       Serial.println("Using TFT DIY");
+    #endif  
+    #ifdef TFT_RPI
+      Serial.println("Using RPI TFT");
+      uint16_t calData[5] = { 278, 3584, 279, 3458, 3 }; // tft.setRotation(1); // Landscape with RPI TFT
     #endif
+
     display_obj.tft.setTouch(calData);
     
   
@@ -787,7 +801,11 @@ void WiFiScan::RunEspressifScan(uint8_t scan_mode, uint16_t color) {
     display_obj.tft.setTextWrap(false);
     display_obj.tft.setTextColor(TFT_WHITE, color);
     #ifndef MARAUDER_MINI
+      #ifdef MARAUDER_DIY
+      display_obj.tft.fillRect(0,16,SCREEN_WIDTH,16, color);
+      #else
       display_obj.tft.fillRect(0,16,240,16, color);
+      #endif
       display_obj.tft.drawCentreString(text_table4[36],120,16,2);
       display_obj.touchToExit();
     #endif
@@ -812,7 +830,9 @@ void WiFiScan::RunPacketMonitor(uint8_t scan_mode, uint16_t color)
   #ifdef MARAUDER_FLIPPER
     flipper_led.sniffLED();
   #else
+    #ifndef MARAUDER_DIY
     led_obj.setMode(MODE_SNIFF);
+    #endif
   #endif
 
   sd_obj.openCapture("packet_monitor");
@@ -829,17 +849,28 @@ void WiFiScan::RunPacketMonitor(uint8_t scan_mode, uint16_t color)
       #ifdef TFT_SHIELD
         uint16_t calData[5] = { 391, 3491, 266, 3505, 7 }; // Landscape TFT Shield
         Serial.println("Using TFT Shield");
-      #else if defined(TFT_DIY)
+      #endif  
+      #ifdef TFT_DIY
         uint16_t calData[5] = { 213, 3469, 320, 3446, 1 }; // Landscape TFT DIY
         Serial.println("Using TFT DIY");
       #endif
+      #ifdef TFT_RPI
+        uint16_t calData[5] = { 278, 3584, 279, 3458, 3 }; // tft.setRotation(1); // Landscape with RPI TFT
+        Serial.println("Using RPI TFT");
+      #endif
+      
       display_obj.tft.setTouch(calData);
     
       //display_obj.tft.setFreeFont(1);
       display_obj.tft.setFreeFont(NULL);
       display_obj.tft.setTextSize(1);
+      #ifdef MARAUDER_DIY
+      display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK); // Buttons
+      display_obj.tft.fillRect(12, 0, TFT_WIDTH-150, 32, TFT_BLACK); // color key
+      #else
       display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK); // Buttons
       display_obj.tft.fillRect(12, 0, 90, 32, TFT_BLACK); // color key
+      #endif
     
       delay(10);
     
@@ -860,7 +891,11 @@ void WiFiScan::RunPacketMonitor(uint8_t scan_mode, uint16_t color)
       display_obj.tft.setTextWrap(false);
       display_obj.tft.setTextColor(TFT_WHITE, color);
       #ifndef MARAUDER_MINI
+      #ifdef MARAUDER_DIY
+        display_obj.tft.fillRect(0,16,SCREEN_WIDTH,16, color);
+      #else
         display_obj.tft.fillRect(0,16,240,16, color);
+      #endif
         display_obj.tft.drawCentreString(text_table4[38],120,16,2);
         display_obj.touchToExit();
       #endif
@@ -905,16 +940,26 @@ void WiFiScan::RunEapolScan(uint8_t scan_mode, uint16_t color)
       #ifdef TFT_SHIELD
         uint16_t calData[5] = { 391, 3491, 266, 3505, 7 }; // Landscape TFT Shield
         //Serial.println("Using TFT Shield");
-      #else if defined(TFT_DIY)
+      #endif  
+      #ifdef TFT_DIY
         uint16_t calData[5] = { 213, 3469, 320, 3446, 1 }; // Landscape TFT DIY
         //Serial.println("Using TFT DIY");
+      #endif  
+      #ifdef TFT_RPI
+        uint16_t calData[5] = { 278, 3584, 279, 3458, 3 }; // tft.setRotation(1); // Landscape with RPI TFT
       #endif
+      
       display_obj.tft.setTouch(calData);
     
       display_obj.tft.setFreeFont(NULL);
       display_obj.tft.setTextSize(1);
+      #ifdef MARAUDER_DIY
+      display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK); // 193
+      display_obj.tft.fillRect(12, 0, TFT_WIDTH-150, 32, TFT_BLACK); // 90
+      #else
       display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK); // Buttons
       display_obj.tft.fillRect(12, 0, 90, 32, TFT_BLACK); // color key
+      #endif
     
       delay(10);
     
@@ -935,7 +980,11 @@ void WiFiScan::RunEapolScan(uint8_t scan_mode, uint16_t color)
       display_obj.tft.setTextWrap(false);
       display_obj.tft.setTextColor(TFT_WHITE, color);
       #ifndef MARAUDER_MINI
+        #ifdef MARAUDER_DIY
+        display_obj.tft.fillRect(0,16,SCREEN_WIDTH,16, color);
+        #else
         display_obj.tft.fillRect(0,16,240,16, color);
+        #endif
         display_obj.tft.drawCentreString(text_table4[38],120,16,2);
         display_obj.touchToExit();
       #endif
@@ -996,7 +1045,11 @@ void WiFiScan::RunMimicFlood(uint8_t scan_mode, uint16_t color) {
     display_obj.tft.setTextWrap(false);
     display_obj.tft.setTextColor(TFT_BLACK, color);
     #ifndef MARAUDER_MINI
-      display_obj.tft.fillRect(0,16,240,16, color);
+      #ifdef MARAUDER_DIY
+        display_obj.tft.fillRect(0,16,SCREEN_WIDTH,16, color);
+      #else
+        display_obj.tft.fillRect(0,16,240,16, color);
+      #endif  
       display_obj.tft.drawCentreString(" Mimic Flood ",120,16,2);
       display_obj.touchToExit();
     #endif
@@ -1034,7 +1087,11 @@ void WiFiScan::RunPwnScan(uint8_t scan_mode, uint16_t color)
     display_obj.tft.setTextWrap(false);
     display_obj.tft.setTextColor(TFT_WHITE, color);
     #ifndef MARAUDER_MINI
-      display_obj.tft.fillRect(0,16,240,16, color);
+      #ifdef MARAUDER_DIY
+        display_obj.tft.fillRect(0,16,SCREEN_WIDTH,16, color);
+      #else
+        display_obj.tft.fillRect(0,16,240,16, color);
+      #endif
       display_obj.tft.drawCentreString(text_table4[37],120,16,2);
       display_obj.touchToExit();
     #endif
@@ -1074,7 +1131,11 @@ void WiFiScan::RunBeaconScan(uint8_t scan_mode, uint16_t color)
     display_obj.tft.setTextWrap(false);
     display_obj.tft.setTextColor(TFT_WHITE, color);
     #ifndef MARAUDER_MINI
-      display_obj.tft.fillRect(0,16,240,16, color);
+      #ifdef MARAUDER_DIY
+        display_obj.tft.fillRect(0,16,SCREEN_WIDTH,16, color);
+      #else
+        display_obj.tft.fillRect(0,16,240,16, color);
+      #endif
       display_obj.tft.drawCentreString(text_table4[38],120,16,2);
       display_obj.touchToExit();
     #endif
@@ -1113,7 +1174,11 @@ void WiFiScan::RunRawScan(uint8_t scan_mode, uint16_t color)
     display_obj.tft.setTextWrap(false);
     display_obj.tft.setTextColor(TFT_WHITE, color);
     #ifndef MARAUDER_MINI
-      display_obj.tft.fillRect(0,16,240,16, color);
+      #ifdef MARAUDER_DIY
+        display_obj.tft.fillRect(0,16,SCREEN_WIDTH,16, color);
+      #else
+        display_obj.tft.fillRect(0,16,240,16, color);
+      #endif
       display_obj.tft.drawCentreString(text_table1[58],120,16,2);
       display_obj.touchToExit();
     #endif
@@ -1152,7 +1217,11 @@ void WiFiScan::RunDeauthScan(uint8_t scan_mode, uint16_t color)
     display_obj.tft.setTextWrap(false);
     display_obj.tft.setTextColor(TFT_BLACK, color);
     #ifndef MARAUDER_MINI
-      display_obj.tft.fillRect(0,16,240,16, color);
+      #ifdef MARAUDER_DIY
+        display_obj.tft.fillRect(0,16,SCREEN_WIDTH,16, color);
+      #else
+        display_obj.tft.fillRect(0,16,240,16, color);
+      #endif
       display_obj.tft.drawCentreString(text_table4[39],120,16,2);
       display_obj.touchToExit();
     #endif
@@ -1193,7 +1262,11 @@ void WiFiScan::RunProbeScan(uint8_t scan_mode, uint16_t color)
     display_obj.tft.setTextWrap(false);
     display_obj.tft.setTextColor(TFT_BLACK, color);
     #ifndef MARAUDER_MINI
-      display_obj.tft.fillRect(0,16,240,16, color);
+      #ifdef MARAUDER_DIY
+        display_obj.tft.fillRect(0,16,SCREEN_WIDTH,16, color);
+      #else
+        display_obj.tft.fillRect(0,16,240,16, color);
+      #endif
       display_obj.tft.drawCentreString(text_table4[40],120,16,2);
       display_obj.touchToExit();
     #endif
@@ -1235,7 +1308,11 @@ void WiFiScan::RunBluetoothScan(uint8_t scan_mode, uint16_t color)
         display_obj.tft.setTextWrap(false);
         display_obj.tft.setTextColor(TFT_BLACK, color);
         #ifndef MARAUDER_MINI
-          display_obj.tft.fillRect(0,16,240,16, color);
+          #ifdef MARAUDER_DIY
+            display_obj.tft.fillRect(0,16,SCREEN_WIDTH,16, color);
+          #else
+            display_obj.tft.fillRect(0,16,240,16, color);
+          #endif  
           display_obj.tft.drawCentreString(text_table4[41],120,16,2);
           display_obj.touchToExit();
         #endif
@@ -1253,7 +1330,11 @@ void WiFiScan::RunBluetoothScan(uint8_t scan_mode, uint16_t color)
         display_obj.initScrollValues(true);
         display_obj.tft.setTextWrap(false);
         display_obj.tft.setTextColor(TFT_BLACK, color);
+        #ifdef MARAUDER_DIY
+        display_obj.tft.fillRect(0,16,SCREEN_WIDTH,16, color);
+        #else
         display_obj.tft.fillRect(0,16,240,16, color);
+        #endif
         display_obj.tft.drawCentreString(text_table4[42],120,16,2);
         display_obj.twoPartDisplay(text_table4[43]);
         display_obj.tft.setTextColor(TFT_BLACK, TFT_DARKGREY);
@@ -2791,7 +2872,11 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
               Serial.println("Shit channel down");
               set_channel--;
               delay(70);
+              #ifdef MARAUDER_DIY
+              display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK);
+              #else
               display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK);
+              #endif
               //display_obj.tftDrawXScaleButtons(x_scale);
               //display_obj.tftDrawYScaleButtons(y_scale);
               display_obj.tftDrawChannelScaleButtons(set_channel);
@@ -2807,7 +2892,11 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
               Serial.println("Shit channel up");
               set_channel++;
               delay(70);
+              #ifdef MARAUDER_DIY
+              display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK);
+              #else
               display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK);
+              #endif
               //display_obj.tftDrawXScaleButtons(x_scale);
               //display_obj.tftDrawYScaleButtons(y_scale);
               display_obj.tftDrawChannelScaleButtons(set_channel);
@@ -2895,9 +2984,13 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
       sd_obj.main();
   
     }
-  
+    #ifdef MARAUDER_DIY
+    display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK); // 193
+    display_obj.tft.fillRect(12, 0, TFT_WIDTH-150, 32, TFT_BLACK); // 90
+    #else
     display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK); //erase XY buttons and any lines behind them
     display_obj.tft.fillRect(12, 0, 90, 32, TFT_BLACK); // key
+    #endif
     display_obj.tftDrawChannelScaleButtons(set_channel);
     display_obj.tftDrawExitScaleButtons();
     display_obj.tftDrawEapolColorKey();
@@ -2962,7 +3055,11 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
             if (x_scale > 1) {
               x_scale--;
               delay(70);
+              #ifdef MARAUDER_DIY
+              display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK);
+              #else
               display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK);
+              #endif
               display_obj.tftDrawXScaleButtons(x_scale);
               display_obj.tftDrawYScaleButtons(y_scale);
               display_obj.tftDrawChannelScaleButtons(set_channel);
@@ -2975,7 +3072,11 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
             if (x_scale < 6) {
               x_scale++;
               delay(70);
+              #ifdef MARAUDER_DIY
+              display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK);
+              #else
               display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK);
+              #endif
               display_obj.tftDrawXScaleButtons(x_scale);
               display_obj.tftDrawYScaleButtons(y_scale);
               display_obj.tftDrawChannelScaleButtons(set_channel);
@@ -2989,7 +3090,11 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
             if (y_scale > 1) {
               y_scale--;
               delay(70);
+              #ifdef MARAUDER_DIY
+              display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK);
+              #else
               display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK);
+              #endif
               display_obj.tftDrawXScaleButtons(x_scale);
               display_obj.tftDrawYScaleButtons(y_scale);
               display_obj.tftDrawChannelScaleButtons(set_channel);
@@ -3004,7 +3109,11 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
             if (y_scale < 9) {
               y_scale++;
               delay(70);
+              #ifdef MARAUDER_DIY
+              display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK);
+              #else
               display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK);
+              #endif
               display_obj.tftDrawXScaleButtons(x_scale);
               display_obj.tftDrawYScaleButtons(y_scale);
               display_obj.tftDrawChannelScaleButtons(set_channel);
@@ -3020,7 +3129,11 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
               Serial.println("Shit channel down");
               set_channel--;
               delay(70);
+              #ifdef MARAUDER_DIY
+              display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK);
+              #else
               display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK);
+              #endif
               display_obj.tftDrawXScaleButtons(x_scale);
               display_obj.tftDrawYScaleButtons(y_scale);
               display_obj.tftDrawChannelScaleButtons(set_channel);
@@ -3036,7 +3149,11 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
               Serial.println("Shit channel up");
               set_channel++;
               delay(70);
+              #ifdef MARAUDER_DIY
+              display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK);
+              #else
               display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK);
+              #endif
               display_obj.tftDrawXScaleButtons(x_scale);
               display_obj.tftDrawYScaleButtons(y_scale);
               display_obj.tftDrawChannelScaleButtons(set_channel);
@@ -3107,7 +3224,11 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
         
         if ( (y_pos_x == 120) || (y_pos_y == 120) || (y_pos_z == 120) )
         {
+          #ifdef MARAUDER_DIY
+          display_obj.tft.drawFastHLine(10, 120, 470, TFT_WHITE); // x axis
+          #else
           display_obj.tft.drawFastHLine(10, 120, 310, TFT_WHITE); // x axis
+          #endif
         }
          
         y_pos_x_old = y_pos_x; //set old y pos values to current y pos values 
@@ -3120,10 +3241,15 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
       sd_obj.main();
      
     }
-    
+    #ifdef MARAUDER_DIY
+    display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK); //erase XY buttons and any lines behind them
+    display_obj.tft.fillRect(12, 0, TFT_WIDTH-150, 32, TFT_BLACK); // key
+    #else
     display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK); //erase XY buttons and any lines behind them
-    //tft.fillRect(56, 0, 66, 32, TFT_ORANGE); //erase time and color key and any stray lines behind them
     display_obj.tft.fillRect(12, 0, 90, 32, TFT_BLACK); // key
+    #endif
+    //tft.fillRect(56, 0, 66, 32, TFT_ORANGE); //erase time and color key and any stray lines behind them
+    
     
     display_obj.tftDrawXScaleButtons(x_scale); //redraw stuff
     display_obj.tftDrawYScaleButtons(y_scale);

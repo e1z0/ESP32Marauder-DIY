@@ -82,8 +82,9 @@ void backlightOn() {
       digitalWrite(TFT_BL, LOW);
     #endif
   
-    #ifndef MARAUDER_MINI
-      digitalWrite(TFT_BL, HIGH);
+    #ifdef MARAUDER_DIY
+      display_obj.tft.writecommand(0x29);
+      //digitalWrite(TFT_BL, HIGH);
     #endif
   #endif
 }
@@ -94,8 +95,9 @@ void backlightOff() {
       digitalWrite(TFT_BL, HIGH);
     #endif
   
-    #ifndef MARAUDER_MINI
-      digitalWrite(TFT_BL, LOW);
+    #ifdef MARAUDER_DIY
+      display_obj.tft.writecommand(0x28);
+      //digitalWrite(TFT_BL, LOW);
     #endif
   #endif
 }
@@ -106,7 +108,9 @@ void setup()
   pinMode(FLASH_BUTTON, INPUT);
 
   #ifdef HAS_SCREEN
-    pinMode(TFT_BL, OUTPUT);
+    #ifndef MARAUDER_DIY
+       pinMode(TFT_BL, OUTPUT);
+    #endif
   #endif
   
   backlightOff();
@@ -151,7 +155,11 @@ void setup()
 
   // Draw the title screen
   #ifdef HAS_SCREEN
+  #ifdef MARAUDER_DIY
+    display_obj.drawJpeg("/marauder3L1.jpg", 0 , 0);     // 240 x 320 image
+  #else
     display_obj.drawJpeg("/marauder3L.jpg", 0 , 0);     // 240 x 320 image
+  #endif  
   #endif
 
   #ifdef HAS_SCREEN
@@ -248,7 +256,9 @@ void setup()
 
   // Do some LED stuff
   #ifndef MARAUDER_FLIPPER
+  #ifndef MARAUDER_DIY
     led_obj.RunSetup();
+  #endif
   #endif
 
   #ifdef HAS_SCREEN
@@ -315,7 +325,9 @@ void loop()
         menu_function_obj.main(currentTime);
       #endif
       #ifndef MARAUDER_FLIPPER
+      #ifndef MARAUDER_DIY
         led_obj.main(currentTime);
+      #endif  
       #endif
       //cli_obj.main(currentTime);
     }
@@ -340,7 +352,9 @@ void loop()
       menu_function_obj.main(currentTime);
     #endif
     #ifndef MARAUDER_FLIPPER
+    #ifndef MARAUDER_DIY
       led_obj.main(currentTime);
+    #endif  
     #endif
     //cli_obj.main(currentTime);
     delay(1);

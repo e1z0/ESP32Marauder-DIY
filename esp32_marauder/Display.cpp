@@ -29,13 +29,18 @@ void Display::RunSetup()
     #ifdef TFT_SHIELD
       uint16_t calData[5] = { 275, 3494, 361, 3528, 4 }; // tft.setRotation(0); // Portrait with TFT Shield
       //Serial.println(F("Using TFT Shield"));
-    #else if defined(TFT_DIY)
+    #endif   
+    #ifdef TFT_DIY
       uint16_t calData[5] = { 339, 3470, 237, 3438, 2 }; // tft.setRotation(0); // Portrait with DIY TFT
       //Serial.println(F("Using TFT DIY"));
+    #endif  
+    #ifdef TFT_RPI
+      uint16_t calData[5] = { 315, 3433, 325, 3564, 6 }; // tft.setRotation(0); // Portrait with RPI TFT
     #endif
     tft.setTouch(calData);
 
   #endif
+
 
   //tft.fillScreen(TFT_BLACK);
   clearScreen();
@@ -376,12 +381,16 @@ int Display::scroll_line(uint32_t color) {
 
 // Function to setup hardware scroll for TFT screen
 void Display::setupScrollArea(uint16_t tfa, uint16_t bfa) {
-  //Serial.println(F("setupScrollArea()"));
-  //Serial.println("   tfa: " + (String)tfa);
-  //Serial.println("   bfa: " + (String)bfa);
-  //Serial.println("yStart: " + (String)this->yStart);
+//  Serial.println(F("setupScrollArea()"));
+//  Serial.println("   tfa: " + (String)tfa);
+//  Serial.println("   bfa: " + (String)bfa);
+//  Serial.println("yStart: " + (String)this->yStart);
   #ifndef MARAUDER_MINI
+  #ifdef MARAUDER_DIY
+    tft.writecommand(0x33); // Vertical scroll definition
+  #else
     tft.writecommand(ILI9341_VSCRDEF); // Vertical scroll definition
+  #endif  
     tft.writedata(tfa >> 8);           // Top Fixed Area line count
     tft.writedata(tfa);
     tft.writedata((YMAX-tfa-bfa)>>8);  // Vertical Scrolling Area line count
@@ -389,12 +398,17 @@ void Display::setupScrollArea(uint16_t tfa, uint16_t bfa) {
     tft.writedata(bfa >> 8);           // Bottom Fixed Area line count
     tft.writedata(bfa);
   #endif
+    
 }
 
 
 void Display::scrollAddress(uint16_t vsp) {
   #ifndef MARAUDER_MINI
+  #ifdef MARAUDER_DIY
+    tft.writecommand(0x37); // Vertical scrolling pointer
+  #else
     tft.writecommand(ILI9341_VSCRSADD); // Vertical scrolling pointer
+  #endif  
     tft.writedata(vsp>>8);
     tft.writedata(vsp);
   #endif

@@ -3,6 +3,7 @@
 HardwareSerial MySerial(1);
 
 void EspInterface::begin() {
+  Serial.println("You should never reach this line");
   pinMode(ESP_RST, OUTPUT);
   pinMode(ESP_ZERO, OUTPUT);
 

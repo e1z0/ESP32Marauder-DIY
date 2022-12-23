@@ -6,6 +6,7 @@ BatteryInterface::BatteryInterface() {
 
 void BatteryInterface::main(uint32_t currentTime) {
   #ifndef MARAUDER_FLIPPER
+  #ifndef MARAUDER_DIY
     if (currentTime != 0) {
       if (currentTime - initTime >= 3000) {
         //Serial.println("Checking Battery Level");
@@ -18,18 +19,22 @@ void BatteryInterface::main(uint32_t currentTime) {
         }
       }
     }
+    #endif
   #endif
 }
 
 void BatteryInterface::RunSetup() {
   #ifndef MARAUDER_FLIPPER
+    #ifndef MARAUDER_DIY
     Wire.begin(I2C_SDA, I2C_SCL);
     this->initTime = millis();
+    #endif
   #endif
 }
 
 int8_t BatteryInterface::getBatteryLevel() {
   #ifndef MARAUDER_FLIPPER
+    #ifndef MARAUDER_DIY
     Wire.beginTransmission(IP5306_ADDR);
     Wire.write(0x78);
     if (Wire.endTransmission(false) == 0 &&
@@ -45,5 +50,6 @@ int8_t BatteryInterface::getBatteryLevel() {
     }
     this->i2c_supported = false;
     return -1;
+    #endif
   #endif
 }

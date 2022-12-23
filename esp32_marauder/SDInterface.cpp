@@ -28,18 +28,22 @@ bool SDInterface::initSD() {
   else {
     this->supported = true;
     this->cardType = SD.cardType();
-    //if (cardType == CARD_MMC)
-    //  Serial.println(F("SD: MMC Mounted"));
-    //else if(cardType == CARD_SD)
-    //    Serial.println(F("SD: SDSC Mounted"));
-    //else if(cardType == CARD_SDHC)
-    //    Serial.println(F("SD: SDHC Mounted"));
-    //else
-    //    Serial.println(F("SD: UNKNOWN Card Mounted"));
+    #ifdef DEBUG
+    if (cardType == CARD_MMC)
+      Serial.println(F("SD: MMC Mounted"));
+    else if(cardType == CARD_SD)
+        Serial.println(F("SD: SDSC Mounted"));
+    else if(cardType == CARD_SDHC)
+        Serial.println(F("SD: SDHC Mounted"));
+    else
+        Serial.println(F("SD: UNKNOWN Card Mounted"));
+    #endif    
 
     this->cardSizeMB = SD.cardSize() / (1024 * 1024);
-    
-    //Serial.printf("SD Card Size: %lluMB\n", this->cardSizeMB);
+
+    #ifdef DEBUG
+    Serial.printf("SD Card Size: %lluMB\n", this->cardSizeMB);
+    #endif
 
     if (this->supported) {
       const int NUM_DIGITS = log10(this->cardSizeMB) + 1;

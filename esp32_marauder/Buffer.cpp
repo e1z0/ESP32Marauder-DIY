@@ -7,6 +7,7 @@ Buffer::Buffer(){
 }
 
 void Buffer::open(fs::FS* fs, String fn){
+
   int i=0;
   do{
     fileName = "/"+fn+"_"+(String)i+".pcap";
@@ -32,6 +33,7 @@ void Buffer::open(fs::FS* fs, String fn){
   write(uint32_t(105)); // data link type
 
   //useSD = true;
+
 }
 
 void Buffer::close(fs::FS* fs){
