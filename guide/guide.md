@@ -130,7 +130,17 @@ STL and SketchUp Files are [located here](https://github.com/e1z0/ESP32Marauder-
     - Download the TFT_eSPI repo
     - In the Arduino IDE, go to `Sketch`>`Include Library`>`Add .ZIP Library...` and add the TFT-eSPI-master.zip you just downloaded
 7. Follow [these instructions](https://github.com/me-no-dev/arduino-esp32fs-plugin) for installing ESP32 Spiffs Tool
-8. Install the [CH340 Drivers](https://github.com/justcallmekoko/ESP32Marauder/blob/master/Drivers/CH34x_Install_Windows_v3_4.EXE) (if you are running windows)
+8. Set the compiler options in `C:\Users\<USERNAME>\AppDate\Local\Arduino15\packages\esp32\hardware\esp32\2.0.3\platform.txt` (Windows) or `/Users/<USERNAME>/Library/Arduino15/packages/esp32/hardware/esp32/2.0.5/platform.txt` (Mac), Add `-w` at the end of each line of:
+    - `build.extra_flags.esp32`
+    - `build.extra_flags.esp32s2`
+    - `build.extra_flags.esp32s3`
+    - `build.extra_flags.esp32c3`
+9. Also add `-zmuldefs` to the following lines (at the end):
+    - `compiler.c.elf.libs.esp32`
+    - `compiler.c.elf.libs.esp32s2`
+    - `compiler.c.elf.libs.esp32s3`
+    - `compiler.c.elf.libs.esp32c3`
+9. Install the [CH340 Drivers](https://github.com/justcallmekoko/ESP32Marauder/blob/master/Drivers/CH34x_Install_Windows_v3_4.EXE) (if you are running windows)
 
 ### Prepare code
 

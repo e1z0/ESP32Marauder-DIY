@@ -13,7 +13,7 @@
   //#define ESP32_LDDB
   #define MARAUDER_DIY // using WROOM32D module and TFT 3.5 LCD RaspberryPI (RPI_ILI9486) with XPT2046 touchscreen
 
-  #define MARAUDER_VERSION "v0.9.20-e1z0-mod"
+  #define MARAUDER_VERSION "v0.10.0-e1z0-mod"
 
     #ifdef MARAUDER_DIY
     /*
