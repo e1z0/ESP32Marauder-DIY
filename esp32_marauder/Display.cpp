@@ -86,12 +86,22 @@ void Display::tftDrawGraphObjects(byte x_scale)
   //draw the graph objects
   tft.fillRect(11, 5, x_scale+1, 120, TFT_BLACK); // positive start point
   tft.fillRect(11, 121, x_scale+1, 119, TFT_BLACK); // negative start point
+  #ifdef TFT_RPI
+  tft.drawFastVLine(10, 5, 310, TFT_WHITE); // y axis
+  tft.drawFastHLine(10, HEIGHT_1 - 1, 470, TFT_WHITE); // x axis
+  #else
   tft.drawFastVLine(10, 5, 230, TFT_WHITE); // y axis
   tft.drawFastHLine(10, HEIGHT_1 - 1, 310, TFT_WHITE); // x axis
+  #endif
   tft.setTextColor(TFT_YELLOW); tft.setTextSize(1); // set parameters for y axis labels
   //tft.setCursor(3, 116); tft.print(midway);  // "0" at center of ya axis
+  #ifdef TFT_RPI
+  tft.setCursor(3, 156); tft.print("+"); // "+' at top of y axis
+  tft.setCursor(3, 308); tft.print("0"); // "-" at bottom of y axis
+  #else
   tft.setCursor(3, 6); tft.print("+"); // "+' at top of y axis
   tft.setCursor(3, 228); tft.print("0"); // "-" at bottom of y axis
+  #endif
 }
 
 void Display::tftDrawEapolColorKey()

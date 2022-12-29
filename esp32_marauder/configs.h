@@ -24,6 +24,10 @@
      */
     // enable debug ?
     #define DEBUG
+    // enable auto channel switch for wifi
+    #define AUTOCHAN
+    #define AUTO_CHANNEL_INTERVAL 15000 // how often to switch channels automatically, in milliseconds
+    
     #define BANNER_TEXT_SIZE 2
 
     #ifndef TFT_WIDTH
@@ -66,13 +70,13 @@
     #define TFT_MISO 19
     #define TFT_MOSI 23
     #define TFT_SCLK 18
-    #define TFT_CS 16 // pakeista, buvo 15
+    #define TFT_CS 16
     #define TFT_DC 2
     #define TFT_RST 4
     //#define TFT_BL 32 this screen does not have LED pin
     #define TOUCH_CS 21
     // pin definitions for sd card module
-    #define SD_CS 15 // pakeista buvo 16
+    #define SD_CS 15
     #define SD_SCK_PIN       18
     #define SD_MOSI_PIN      23
     #define SD_MISO_PIN      19

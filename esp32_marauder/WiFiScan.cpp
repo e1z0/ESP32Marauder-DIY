@@ -5,6 +5,9 @@ int num_beacon = 0;
 int num_deauth = 0;
 int num_probe = 0;
 int num_eapol = 0;
+#ifdef AUTOCHAN
+uint32_t lastAutoSwitchChTime = 0;
+#endif
 
 LinkedList<ssid>* ssids;
 LinkedList<AccessPoint>* access_points;
@@ -957,10 +960,12 @@ void WiFiScan::RunPacketMonitor(uint8_t scan_mode, uint16_t color)
 
 void WiFiScan::RunEapolScan(uint8_t scan_mode, uint16_t color)
 {
+  #ifndef MARAUDER_DIY
   #ifdef MARAUDER_FLIPPER
     flipper_led.sniffLED();
   #else
     led_obj.setMode(MODE_SNIFF);
+  #endif
   #endif
   
   num_eapol = 0;
@@ -991,9 +996,10 @@ void WiFiScan::RunEapolScan(uint8_t scan_mode, uint16_t color)
     
       display_obj.tft.setFreeFont(NULL);
       display_obj.tft.setTextSize(1);
-      #ifdef MARAUDER_DIY
-      display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK); // 193
-      display_obj.tft.fillRect(12, 0, TFT_WIDTH-150, 32, TFT_BLACK); // 90
+      // support for RaspberryPI tft lcd
+      #ifdef TFT_RPI
+      display_obj.tft.fillRect(127, 0, 433, 28, TFT_BLACK);
+      display_obj.tft.fillRect(12, 0, 330, 32, TFT_BLACK);
       #else
       display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK); // Buttons
       display_obj.tft.fillRect(12, 0, 90, 32, TFT_BLACK); // color key
@@ -1018,7 +1024,8 @@ void WiFiScan::RunEapolScan(uint8_t scan_mode, uint16_t color)
       display_obj.tft.setTextWrap(false);
       display_obj.tft.setTextColor(TFT_WHITE, color);
       #ifndef MARAUDER_MINI
-        #ifdef MARAUDER_DIY
+        // support for RaspberryPI tft lcd
+        #ifdef TFT_RPI
         display_obj.tft.fillRect(0,16,SCREEN_WIDTH,16, color);
         #else
         display_obj.tft.fillRect(0,16,240,16, color);
@@ -3078,7 +3085,7 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
 
   if (( (snifferPacket->payload[30] == 0x88 && snifferPacket->payload[31] == 0x8e)|| ( snifferPacket->payload[32] == 0x88 && snifferPacket->payload[33] == 0x8e) )){
     num_eapol++;
-    Serial.println("Received EAPOL:");
+    Serial.println("Received EAPOL2:");
 
 //    for (int i = 0; i < len; i++) {
 //      char hexCar[3];
@@ -3105,10 +3112,41 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
     
   
   //  for (x_pos = (11 + x_scale); x_pos <= 320; x_pos += x_scale) //go along every point on the x axis and do something, start over when finished
+  // TRUE fix
+    #ifdef TFT_RPI
+    for (x_pos = (11 + x_scale); x_pos <= 480; x_pos = x_pos)
+    #else
     for (x_pos = (11 + x_scale); x_pos <= 320; x_pos = x_pos)
+    #endif
     {
       currentTime = millis();
       do_break = false;
+
+      // auto channel implementation
+      #ifdef AUTOCHAN
+      if ( currentTime - lastAutoSwitchChTime > AUTO_CHANNEL_INTERVAL ) {
+          #ifdef DEBUG
+          Serial.println("Time to automatically switch the wifi channel");
+          #endif
+          if (set_channel < MAX_CHANNEL) {
+              set_channel++;
+          } else {
+             set_channel = 1;
+          }
+          #ifdef TFT_RPI
+          display_obj.tft.fillRect(127, 0, 433, 28, TFT_BLACK);
+          #else
+          display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK);
+          #endif
+          display_obj.tftDrawChannelScaleButtons(set_channel);
+          display_obj.tftDrawExitScaleButtons();
+          changeChannel();
+          #ifdef DEBUG
+          Serial.println("Channel switched to: "+String(set_channel));
+          #endif
+          lastAutoSwitchChTime = currentTime;
+      }
+      #endif
   
       y_pos_x = 0;
       y_pos_y = 0;
@@ -3158,8 +3196,8 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
               Serial.println("Shit channel down");
               set_channel--;
               delay(70);
-              #ifdef MARAUDER_DIY
-              display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK);
+              #ifdef TFT_RPI
+              display_obj.tft.fillRect(127, 0, 433, 28, TFT_BLACK);
               #else
               display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK);
               #endif
@@ -3178,8 +3216,8 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
               Serial.println("Shit channel up");
               set_channel++;
               delay(70);
-              #ifdef MARAUDER_DIY
-              display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK);
+              #ifdef TFT_RPI
+              display_obj.tft.fillRect(127, 0, 433, 28, TFT_BLACK);
               #else
               display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK);
               #endif
@@ -3232,7 +3270,12 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
   
         //Draw preceding black 'boxes' to erase old plot lines, !!!WEIRD CODE TO COMPENSATE FOR BUTTONS AND COLOR KEY SO 'ERASER' DOESN'T ERASE BUTTONS AND COLOR KEY!!!
         //if ((x_pos <= 90) || ((x_pos >= 198) && (x_pos <= 320))) //above x axis
+   //     #ifdef TFT_RPI
+   //     if ((x_pos <= 90) || ((x_pos >= 117) && (x_pos <= 480))) //above x axis
+   //     #else
+        // there is no need to fix this for RPI_LCD
         if ((x_pos <= 90) || ((x_pos >= 117) && (x_pos <= 320))) //above x axis
+   //     #endif
         {
           display_obj.tft.fillRect(x_pos+1, 28, 10, 93, TFT_BLACK); //compensate for buttons!
         }
@@ -3270,9 +3313,9 @@ void WiFiScan::activeEapolSnifferCallback(void* buf, wifi_promiscuous_pkt_type_t
       sd_obj.main();
   
     }
-    #ifdef MARAUDER_DIY
-    display_obj.tft.fillRect(127, 0, TFT_WIDTH-47, 28, TFT_BLACK); // 193
-    display_obj.tft.fillRect(12, 0, TFT_WIDTH-150, 32, TFT_BLACK); // 90
+    #ifdef TFT_RPI
+    display_obj.tft.fillRect(127, 0, 433, 28, TFT_BLACK); // 193
+    display_obj.tft.fillRect(12, 0, 330, 32, TFT_BLACK); // 90
     #else
     display_obj.tft.fillRect(127, 0, 193, 28, TFT_BLACK); //erase XY buttons and any lines behind them
     display_obj.tft.fillRect(12, 0, 90, 32, TFT_BLACK); // key

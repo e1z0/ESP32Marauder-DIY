@@ -156,7 +156,7 @@ void setup()
   // Draw the title screen
   #ifdef HAS_SCREEN
   #ifdef MARAUDER_DIY
-    display_obj.drawJpeg("/marauder3L1.jpg", 0 , 0);     // 240 x 320 image
+    display_obj.drawJpeg("/marauder3L1.jpg", 43 , 0);     // 240 x 320 image but to start it at the center of the screen
   #else
     display_obj.drawJpeg("/marauder3L.jpg", 0 , 0);     // 240 x 320 image
   #endif  
@@ -165,7 +165,11 @@ void setup()
   #ifdef HAS_SCREEN
     //showCenterText(version_number, 250);
     #ifndef MARAUDER_MINI
+      #ifdef MARAUDER_DIY
+      display_obj.tft.drawCentreString(display_obj.version_number, 165, 250, 2);
+      #else
       display_obj.tft.drawCentreString(display_obj.version_number, 120, 250, 2);
+      #endif
     #endif
   
     #ifdef MARAUDER_MINI
